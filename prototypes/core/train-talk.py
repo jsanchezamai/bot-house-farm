@@ -1,9 +1,5 @@
-import os
-import pdfplumber
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import random
-
-from nosce import Trainer
 
 def train_model_from_pdf(pdf_path):
     # Tu código para entrenar el modelo a partir del PDF
@@ -32,14 +28,14 @@ def main():
         choice = input("Elige una opción: ")
 
         if choice == "a":
-            pdf_path = 'target.pdf' # input("Introduce la ruta del PDF para el entrenamiento: ")
+            pdf_path = input("Introduce la ruta del PDF para el entrenamiento: ")  # 'base.pdf'
             train_model_from_pdf(pdf_path)
-            model_output_dir = 'presets/' + pdf_path # input("Introduce la ruta para guardar los modelos entrenados: ")
+            model_output_dir = input("Introduce la ruta para guardar los modelos entrenados: ") #  'presets/' + pdf_path 
             save_model_to_disk(model_output_dir)
-            print("Modelos guardados exitosamente.")
+            print("Modelos guardados exitosamente en: " + model_output_dir)
 
         elif choice == "b":
-            model_dir = 'presets/target.pdf' # input("Introduce la ruta del directorio con los modelos entrenados: ")
+            model_dir =  input("Introduce la ruta del directorio con los modelos entrenados: ")  # 'presets/base.pdf'
             model, tokenizer = load_model_from_disk(model_dir)
 
             while True:
@@ -47,14 +43,7 @@ def main():
                 input_ids = tokenizer.encode(user_input, return_tensors="pt")
                 output = model.generate(input_ids, max_length=100, num_return_sequences=1)
                 generated_response = tokenizer.decode(output[0], skip_special_tokens=True)
-
-                # Split the input string by '\n\n' to create a list of paragraphs
-                paragraphs = generated_response.split('.')
-
-                # Get a random paragraph using random.choice()
-                random_paragraph = random.choice(paragraphs)
-
-                print("Modelo:", random_paragraph)
+                print("Modelo:", generated_response)
 
                 continue_conversation = input("¿Quieres continuar conversando? (s/n): ")
                 if continue_conversation.lower() != "s":
